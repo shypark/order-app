@@ -1,0 +1,44 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: #1976d2;
+  border-bottom: 1px solid #1565c0;
+}
+
+.header-brand {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.header-nav {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.header-tab {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  border-radius: 6px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.header-tab:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.header-tab--active {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.header-tab--active:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.25);
+}
