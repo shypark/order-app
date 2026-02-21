@@ -1,14 +1,19 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const { testConnection } = require('./db');
+const menusRouter = require('./routes/menus');
+const ordersRouter = require('./routes/orders');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// JSON 요청 본문 파싱 (주문 등 POST용)
+app.use(cors());
 app.use(express.json());
 
-// 헬스 체크
+app.use('/api/menus', menusRouter);
+app.use('/api/orders', ordersRouter);
+
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: '커피 주문 앱 서버' });
 });

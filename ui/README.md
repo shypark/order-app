@@ -16,7 +16,15 @@ npm install
 
 # 개발 서버 실행 (기본: http://localhost:5173)
 npm run dev
+```
 
+백엔드 API는 기본적으로 `http://localhost:3001`을 사용합니다. 서버 포트가 다르면 프로젝트 루트에 `.env` 파일을 만들고 다음을 설정하세요.
+
+```
+VITE_API_URL=http://localhost:3001
+```
+
+```bash
 # 프로덕션 빌드
 npm run build
 

@@ -48,8 +48,22 @@ npm start
 | `DB_USER` | DB 사용자 | `postgres` |
 | `DB_PASSWORD` | DB 비밀번호 | (본인 비밀번호) |
 
+## DB 초기화
+
+테이블 생성 및 시드 데이터(메뉴, 옵션) 삽입:
+
+```bash
+npm run init-db
+```
+
 ## API
 
 - `GET /health` — 서버 상태 확인
 - `GET /health/db` — PostgreSQL 연결 여부 확인
-- 메뉴 목록, 주문 생성/조회 등은 PRD 기준으로 추가 예정
+- `GET /api/menus` — 메뉴 목록 (쿼리 `?includeStock=1` 시 재고 포함)
+- `GET /api/menus/inventory` — 재고 목록 (관리자)
+- `PATCH /api/menus/:id/stock` — 재고 수정 (body: `{ delta }` 또는 `{ stock }`)
+- `GET /api/orders` — 주문 목록
+- `GET /api/orders/:id` — 주문 단건 조회
+- `POST /api/orders` — 주문 생성 (body: `{ items, totalAmount }`)
+- `PATCH /api/orders/:id` — 주문 상태 변경 (body: `{ status }`)

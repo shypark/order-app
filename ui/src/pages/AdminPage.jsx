@@ -1,5 +1,5 @@
-import { useApp, INVENTORY_MENU_IDS } from '../context/AppContext'
-import { COFFEE_MENU } from '../data/menu'
+import { useEffect } from 'react'
+import { useApp } from '../context/AppContext'
 import './AdminPage.css'
 
 function getInventoryStatus(stock) {
@@ -17,25 +17,19 @@ function formatOrderDate(date) {
   return `${month}월 ${day}일 ${hours}:${minutes}`
 }
 
-const MENU_NAME_BY_ID = Object.fromEntries(COFFEE_MENU.map((m) => [m.id, m.name]))
-
 export default function AdminPage() {
-  const { orders, updateOrderStatus, inventory, updateInventory } = useApp()
+  const { orders, inventory, loadOrders, loadInventory, updateOrderStatus, updateInventory } = useApp()
+
+  useEffect(() => {
+    loadOrders()
+    loadInventory()
+  }, [loadOrders, loadInventory])
 
   const totalOrders = orders.length
   const receivedCount = orders.filter((o) => o.status === 'received').length
   const makingCount = orders.filter((o) => o.status === 'making').length
   const doneCount = orders.filter((o) => o.status === 'done').length
-  // 대시보드: 총 주문 = 전체, 주문 접수 = received, 제조 중 = making, 제조 완료 = done
-  // (PRD에서 "주문 접수"는 접수된 건수이므로 received로 표시)
 
-  const inventoryMenus = INVENTORY_MENU_IDS.map((id) => ({
-    id,
-    name: MENU_NAME_BY_ID[id] || id,
-    stock: inventory[id] ?? 0,
-  }))
-
-  // 주문 현황: 대기(pending) + 접수(received) + 제조중(making) 표시 (완료는 제외하거나 별도 표시)
   const visibleOrders = orders.filter((o) => o.status !== 'done')
 
   return (
@@ -65,7 +59,7 @@ export default function AdminPage() {
       <section className="admin-section admin-inventory">
         <h2 className="admin-section__title">재고 현황</h2>
         <div className="inventory-cards">
-          {inventoryMenus.map(({ id, name, stock }) => {
+          {inventory.map(({ id, name, stock }) => {
             const status = getInventoryStatus(stock)
             return (
               <div key={id} className="inventory-card">
@@ -124,13 +118,13 @@ export default function AdminPage() {
                     <li key={idx} className="order-card__item">
                       {item.name}
                       {item.optionLabels?.length > 0 && ` (${item.optionLabels.join(', ')})`} X {item.quantity}{' '}
-                      — {item.totalPrice.toLocaleString()}원
+                      — {Number(item.totalPrice).toLocaleString()}원
                     </li>
                   ))}
                 </ul>
                 <div className="order-card__footer">
                   <span className="order-card__total">
-                    총 {order.totalAmount.toLocaleString()}원
+                    총 {Number(order.totalAmount).toLocaleString()}원
                   </span>
                   {order.status === 'pending' && (
                     <button
