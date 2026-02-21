@@ -17,6 +17,7 @@ function getPool() {
         database: process.env.DB_NAME || 'coffe_order_db',
         user: process.env.DB_USER || 'postgres',
         password: process.env.DB_PASSWORD,
+        ssl: { rejectUnauthorized: false },
       };
 
   pool = new Pool(config);
