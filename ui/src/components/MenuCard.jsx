@@ -4,6 +4,7 @@ import './MenuCard.css'
 
 export default function MenuCard({ item, onAddToCart }) {
   const [selectedOptions, setSelectedOptions] = useState({})
+  const [imageError, setImageError] = useState(false)
 
   const handleOptionChange = (optionId, checked) => {
     setSelectedOptions((prev) => ({ ...prev, [optionId]: checked }))
@@ -23,7 +24,17 @@ export default function MenuCard({ item, onAddToCart }) {
   return (
     <article className="menu-card">
       <div className="menu-card__image">
-        <span className="menu-card__image-placeholder">이미지</span>
+        {item.image && !imageError ? (
+          <img
+            src={item.image}
+            alt={item.name}
+            className="menu-card__img"
+            loading="lazy"
+            onError={() => setImageError(true)}
+          />
+        ) : (
+          <span className="menu-card__image-placeholder">이미지</span>
+        )}
       </div>
       <h3 className="menu-card__name">{item.name}</h3>
       <p className="menu-card__price">{item.price.toLocaleString()}원</p>

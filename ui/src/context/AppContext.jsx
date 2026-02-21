@@ -13,13 +13,16 @@ export function AppProvider({ children }) {
 
   const addOrder = useCallback((cartItems, totalAmount) => {
     const id = `order-${Date.now()}`
-    const items = cartItems.map(({ name, optionLabels, quantity, unitPrice, totalPrice }) => ({
-      name,
-      optionLabels,
-      quantity,
-      unitPrice,
-      totalPrice,
-    }))
+    const items = cartItems.map(
+      ({ menuId, name, optionLabels, quantity, unitPrice, totalPrice }) => ({
+        menuId,
+        name,
+        optionLabels,
+        quantity,
+        unitPrice,
+        totalPrice,
+      })
+    )
     setOrders((prev) => [
       ...prev,
       {
@@ -33,10 +36,23 @@ export function AppProvider({ children }) {
   }, [])
 
   const updateOrderStatus = useCallback((orderId, status) => {
+    const order = orders.find((o) => o.id === orderId)
     setOrders((prev) =>
       prev.map((o) => (o.id === orderId ? { ...o, status } : o))
     )
-  }, [])
+    // 제조 완료 시 해당 주문 메뉴만큼 재고 차감 (재고 관리 대상 메뉴만)
+    if (status === 'done' && order?.items?.length) {
+      setInventory((prev) => {
+        const next = { ...prev }
+        order.items.forEach((item) => {
+          if (item.menuId != null && prev[item.menuId] != null) {
+            next[item.menuId] = Math.max(0, prev[item.menuId] - item.quantity)
+          }
+        })
+        return next
+      })
+    }
+  }, [orders])
 
   const updateInventory = useCallback((menuId, delta) => {
     setInventory((prev) => ({
