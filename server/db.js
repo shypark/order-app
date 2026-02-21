@@ -6,7 +6,11 @@ function getPool() {
   if (pool) return pool;
 
   const config = process.env.DATABASE_URL
-    ? { connectionString: process.env.DATABASE_URL }
+    ? {
+        connectionString: process.env.DATABASE_URL,
+        // Render 등 클라우드 PostgreSQL은 SSL 필수
+        ssl: { rejectUnauthorized: false },
+      }
     : {
         host: process.env.DB_HOST || 'localhost',
         port: parseInt(process.env.DB_PORT, 10) || 5432,
