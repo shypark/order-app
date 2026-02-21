@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import { COFFEE_MENU } from '../data/menu'
+import { useApp } from '../context/AppContext'
 import MenuCard from '../components/MenuCard'
 import CartSection from '../components/CartSection'
 import './OrderPage.css'
@@ -11,6 +12,7 @@ function makeCartKey(menuId, options) {
 
 export default function OrderPage() {
   const [cart, setCart] = useState([])
+  const { addOrder } = useApp()
 
   const addToCart = useCallback((item, options) => {
     const optionLabels = options.map((o) => o.label)
@@ -70,10 +72,11 @@ export default function OrderPage() {
 
   const submitOrder = useCallback(() => {
     if (cart.length === 0) return
-    // TODO: API 연동 시 주문 요청
-    alert('주문이 접수되었습니다. (백엔드 연동 전)')
+    const totalAmount = cart.reduce((sum, item) => sum + item.totalPrice, 0)
+    addOrder(cart, totalAmount)
     setCart([])
-  }, [cart.length])
+    alert('주문이 접수되었습니다.')
+  }, [cart, addOrder])
 
   return (
     <div className="order-page">
